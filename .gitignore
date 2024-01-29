@@ -1,0 +1,14 @@
+# Dependencias
+App/node_modules
+
+# Archivos de compilación
+App/build
+App/dist
+
+# Archivos de configuración
+#.env
+
+# Archivos de registro y errores
+App/npm-debug.log*
+App/yarn-debug.log*
+App/yarn-error.log*
