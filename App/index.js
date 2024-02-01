@@ -1,19 +1,54 @@
+// READ CONFIG.PROPERTIES
 const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('../config.properties');
 
-const express = require('express');
-//const testRoute = require('./routes/test.route');
+// Import Class
+const hitsFunctions = require("./src/Functions/hits")
+const AxiosController = require('./src/Controller/axios.controller');
+const Database = require('./src/Controller/mysql.controller');
 
-const app = express();
+// Functions
+const lastHitsSave = async (URL, dbConfig) => {
+  const hitsFunctionsOBJ = new hitsFunctions(URL);
+  const [URL_QUERY,  PAYLOAD] = await hitsFunctionsOBJ.getLasHits()
+  //const axiosControllerObj = new AxiosController(URL);
+  console.log(URL_QUERY, PAYLOAD)
 
-app.use(express.json());
+  // DATABASE CONEXION
 
-// Rutas
-//app.use('/api', testRoute);
+  const db = new Database(dbConfig);
+  db.connect();
 
-// Puerto de escucha
-const port = 5000;
-app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto ${port}`);
-  console.log(properties.get('CTP_URL'))
-});
+  db.query('').then(results => {
+      console.log('La solución es:', results[0].solution);
+  }).catch(error => {
+      console.error('Error:', error);
+  }).finally(() => {
+      db.end();
+  });
+
+};
+
+
+/////////////////////////////////////////////////////////////////
+
+const URL = properties.get('CTP_URL');
+const dbConfig = {
+  host: properties.get('DB_HOST'),
+  user: properties.get('DB_USER'),
+  password: properties.get('DB_PASS'),
+  database: properties.get('DB_DATABASE')
+};
+
+lastHitsSave(URL,dbConfig)
+
+
+
+
+
+
+
+
+
+
+
